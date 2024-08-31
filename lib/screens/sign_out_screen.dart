@@ -1,5 +1,7 @@
 import 'package:expenz/constants/colors.dart';
 import 'package:expenz/constants/responsive.dart';
+import 'package:expenz/screens/main_screen.dart';
+import 'package:expenz/services/user_service.dart';
 import 'package:expenz/widgets/reusable/long_button_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -149,15 +151,28 @@ class _SignOutScreenState extends State<SignOutScreen> {
                     ),
                     const SizedBox(height: 40),
                     GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         if(_formKey.currentState!.validate()){
                           String userName = _userNameContraller.text;
-                          String email = _userEmailContraller.text;
-                          String password = _userPasswordContraller.text;
-                          String confirmPassword = _userConfirmPasswordContraller.text;
-
-                          //save user data
+                          String userEmail = _userEmailContraller.text;
+                          String userPassword = _userPasswordContraller.text;
+                          String userConfirmPassword = _userConfirmPasswordContraller.text;
                           
+                          //save user data
+                          await UserService.storeUserdetails(
+                            userName: userName, 
+                            userEmail: userEmail, 
+                            userPassword: userPassword, 
+                            userConfirmPassword: userConfirmPassword, 
+                            context: context
+                          );
+                          //navigate to main screen
+                          if(context.mounted){
+                              Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const MainScreen(),
+                              ),
+                            );
+                          }
                         }
                       },
                       child: const LongButtonWidget(
