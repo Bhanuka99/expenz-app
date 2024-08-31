@@ -30,12 +30,22 @@ class UserService {
         await pref.setString("userEmail", userEmail);
 
         //show message
-        ScaffoldMessenger.of(context).showSnackBar(
+        if(context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("User Data Saved succesfully"))
         );
+        }
 
       }catch(err){
         err.toString();
       }
+    }
+
+    //method to checkwhether the username is saved in shared pref
+    static Future<bool> checkUserName() async {
+      //create an instance
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? userName = pref.getString("userName");
+      return userName != null;
     }
 }
