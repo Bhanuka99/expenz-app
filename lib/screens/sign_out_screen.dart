@@ -65,6 +65,8 @@ class _SignOutScreenState extends State<SignOutScreen> {
                       validator: (value) {
                         if(value!.isEmpty){
                           return "Please Enter Your Name!";
+                        }else{
+                          return null;
                         }
                       },
                       decoration: InputDecoration(
@@ -81,6 +83,8 @@ class _SignOutScreenState extends State<SignOutScreen> {
                       validator: (value) {
                         if(value!.isEmpty){
                           return "Please Enter Your Email!";
+                        }else{
+                          return null;
                         }
                       },
                       decoration: InputDecoration(
@@ -97,6 +101,8 @@ class _SignOutScreenState extends State<SignOutScreen> {
                       validator: (value) {
                         if(value!.isEmpty){
                           return "Please Enter Your Password!";
+                        }else{
+                          return null;
                         }
                       },
                       obscureText: true,
@@ -114,6 +120,8 @@ class _SignOutScreenState extends State<SignOutScreen> {
                       validator: (value) {
                         if(value!.isEmpty){
                           return "Please Enter Your Password Again!";
+                        }else{
+                          return null;
                         }
                       },
                       obscureText: true,
