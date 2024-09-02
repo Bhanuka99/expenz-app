@@ -56,6 +56,20 @@ class _MainScreenState extends State<MainScreen> {
       incomeList.add(newIncome);
     });
   }
+  //Function to remove a expense
+  void removeExpense(Expense expense){
+    ExpenseService().deleteExpense(expense.id, context);
+    setState(() {
+      expenseList.remove(expense);
+    });
+  }
+  //Function to remove income
+  void removeIncome(Income income){
+    IncomeService().deleteIncome(income.id, context);
+    setState(() {
+      incomeList.remove(income);
+    });
+  }
 
   @override
   void initState() {
@@ -70,8 +84,16 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
 
     final List<Widget> pages = [
-      const HomeScreen(),
-      const TransactionScreen(),
+      HomeScreen(
+        expenseList: expenseList,
+        incomeList: incomeList,
+      ),
+      TransactionScreen(
+        expensesList: expenseList,
+        onDismissExpense: removeExpense,
+        incomeList: incomeList,
+        onDismissIncome: removeIncome,
+        ),
       AddNewScreen(
         addExpense: addNewExpense,
         addIncome: addNewIncome,
