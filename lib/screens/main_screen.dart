@@ -1,11 +1,13 @@
 import 'package:expenz/constants/colors.dart';
 import 'package:expenz/model/expense_model.dart';
+import 'package:expenz/model/income_model.dart';
 import 'package:expenz/screens/add_new_screen.dart';
 import 'package:expenz/screens/budget_screen.dart';
 import 'package:expenz/screens/home_screen.dart';
 import 'package:expenz/screens/profile_screen.dart';
 import 'package:expenz/screens/transaction_screen.dart';
 import 'package:expenz/services/expense_service.dart';
+import 'package:expenz/services/income_service.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
@@ -19,6 +21,7 @@ class _MainScreenState extends State<MainScreen> {
 
   int _currentPageIndex = 0;
   List<Expense>  expenseList = [];
+  List<Income>  incomeList = [];
 
   //Function to fetch expenses
   void fetchaAllExpenses () async {
@@ -37,12 +40,29 @@ class _MainScreenState extends State<MainScreen> {
       expenseList.add(newExpense);
     });
   }
+  //function to fetch incomes
+  void fetchaAllIncomes ()async {
+    List<Income> loadedIncomes =  await IncomeService().loadIncome();
+    setState(() {
+      incomeList = loadedIncomes;
+    });
+  }
+  //Function to add new income
+  void addNewIncome(Income newIncome){
+    IncomeService().saveincome(newIncome, context);
+
+    //update the list of incomes
+    setState(() {
+      incomeList.add(newIncome);
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     setState(() {
       fetchaAllExpenses();
+      fetchaAllIncomes();
     });
   }
   
@@ -50,13 +70,14 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
 
     final List<Widget> pages = [
-      HomeScreen(),
-      TransactionScreen(),
+      const HomeScreen(),
+      const TransactionScreen(),
       AddNewScreen(
         addExpense: addNewExpense,
+        addIncome: addNewIncome,
       ),
-      BudgetScreen(),
-      ProfileScreen()
+      const BudgetScreen(),
+      const ProfileScreen()
     ];
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(

@@ -3,13 +3,15 @@ import 'package:expenz/constants/responsive.dart';
 import 'package:expenz/model/expense_model.dart';
 import 'package:expenz/model/income_model.dart';
 import 'package:expenz/services/expense_service.dart';
+import 'package:expenz/services/income_service.dart';
 import 'package:expenz/widgets/reusable/long_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class AddNewScreen extends StatefulWidget {
   final Function(Expense) addExpense;
-  const AddNewScreen({super.key, required this.addExpense});
+  final Function(Income) addIncome;
+  const AddNewScreen({super.key, required this.addExpense, required this.addIncome});
 
   @override
   State<AddNewScreen> createState() => _AddNewScreenState();
@@ -362,7 +364,9 @@ class _AddNewScreenState extends State<AddNewScreen> {
                             GestureDetector(
                               onTap: () async {
                                 //save data to shared pref
-                                List<Expense> loadedExpenses = 
+                                if(_selectedMethode == 0){
+                                  //add expense
+                                  List<Expense> loadedExpenses = 
                                     await ExpenseService().loadExpense();
                                 //create the expense to store
                                 Expense expense = Expense(
@@ -378,6 +382,33 @@ class _AddNewScreenState extends State<AddNewScreen> {
                                 );
                                 //add expense
                                 widget.addExpense(expense);
+                                //clear the fields afret adding
+                                _titileController.clear();
+                                _amountController.clear();
+                                _descriptionController.clear();
+                                }else{
+                                  //add income
+                                  List<Income> loadIncome = 
+                                    await IncomeService().loadIncome();
+                                  //create the income to store
+                                  Income income = Income(
+                                    id: loadIncome.length+1, 
+                                    title: _titileController.text, 
+                                    amount: _amountController.text.isEmpty
+                                          ? 0
+                                          :double.parse(_amountController.text), 
+                                    category: _incomeCategory, 
+                                    date: _selectedDate, 
+                                    time: _selectedTime, 
+                                    description: _descriptionController.text,
+                                  );
+                                  //add income
+                                  widget.addIncome(income);
+                                  //clear the fields afret adding
+                                _titileController.clear();
+                                _amountController.clear();
+                                _descriptionController.clear();
+                                }
                               },
                               child: LongButtonWidget(
                                 buttonName: "Add", 
