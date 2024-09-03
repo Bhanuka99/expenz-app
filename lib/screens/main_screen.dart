@@ -70,6 +70,33 @@ class _MainScreenState extends State<MainScreen> {
       incomeList.remove(income);
     });
   }
+  //category expense total
+  Map<ExpenseCategory, double> calculateExpenseCategories(){
+    Map<ExpenseCategory, double> categoryTotals =  {
+      ExpenseCategory.food : 0,
+      ExpenseCategory.health : 0,
+      ExpenseCategory.shopping : 0,
+      ExpenseCategory.subscription : 0,
+      ExpenseCategory.transport : 0,
+    };
+    for(Expense expense in expenseList){
+      categoryTotals[expense.category]=categoryTotals[expense.category]! + expense.amount;
+    }
+    return categoryTotals;
+  }
+  //category income total
+  Map<IncomeCategory, double> calculateIncomeCategories(){
+    Map<IncomeCategory, double> categoryTotals =  {
+      IncomeCategory.freelance : 0,
+      IncomeCategory.passive : 0,
+      IncomeCategory.salary : 0,
+      IncomeCategory.sales : 0,
+    };
+    for(Income income in incomeList){
+      categoryTotals[income.category]=categoryTotals[income.category]! + income.amount;
+    }
+    return categoryTotals;
+  }
 
   @override
   void initState() {
@@ -97,8 +124,12 @@ class _MainScreenState extends State<MainScreen> {
       AddNewScreen(
         addExpense: addNewExpense,
         addIncome: addNewIncome,
+      ),BudgetScreen(
+        expenseCategorytotal: calculateExpenseCategories(),
+        incomeCategorytotal: calculateIncomeCategories(), 
+        expenseList: expenseList, 
+        incomeList: incomeList,
       ),
-      const BudgetScreen(),
       const ProfileScreen()
     ];
     return Scaffold(

@@ -42,8 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
         expenseTotal += widget.expenseList[i].amount;
       }
       //total amount of income
-      for( var i=0; i < widget.incomeList.length;i++){
-        incomeTotal += widget.incomeList[i].amount;
+      for( var j=0; j < widget.incomeList.length;j++){
+        incomeTotal += widget.incomeList[j].amount;
       }
     });
     super.initState();
