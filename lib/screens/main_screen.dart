@@ -130,7 +130,8 @@ class _MainScreenState extends State<MainScreen> {
         expenseList: expenseList, 
         incomeList: incomeList,
       ),
-      const ProfileScreen()
+      const ProfileScreen(),
+      
     ];
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(

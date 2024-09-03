@@ -111,7 +111,33 @@ class ExpenseService {
           )
         );
        }
+    }
+  }
+  //remove all expenses from shared pref
+  Future<void> removeAllExpenses (BuildContext context) async {
+    try{
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      await pref.remove(_expenseKey);
 
+      //show snackbar
+      if(context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Delete all expenses successfully!"),
+            duration: Duration(seconds: 2),
+          )
+        );
+       }
+
+    }catch(err){
+      if(context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Error on deleting Expenses!"),
+            duration: Duration(seconds: 2),
+          )
+        );
+       }
     }
   }
 }
