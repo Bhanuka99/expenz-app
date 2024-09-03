@@ -26,8 +26,11 @@ class _AddNewScreenState extends State<AddNewScreen> {
   final TextEditingController _titileController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
+
   DateTime _selectedDate = DateTime.now();
   DateTime _selectedTime = DateTime.now();
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -141,7 +144,7 @@ class _AddNewScreenState extends State<AddNewScreen> {
                 ),
                 //user data form
                 Container(
-                  height: MediaQuery.of(context).size.height*0.7,
+                  height: MediaQuery.of(context).size.height*0.75,
                   margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
                   decoration: const BoxDecoration(
                     color: kmainWhiteColor,
@@ -153,6 +156,7 @@ class _AddNewScreenState extends State<AddNewScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(20),
                     child: Form(
+                      key: _formKey,
                       child: Column(
                         children: [
                           //category dropdown
@@ -190,6 +194,13 @@ class _AddNewScreenState extends State<AddNewScreen> {
                             //title
                             TextFormField(
                               controller: _titileController,
+                              validator: (value) {
+                                if(value!.isEmpty){
+                                  return "Please Enter Title!!";
+                                }else{
+                                  return null;
+                                }
+                              },
                               decoration: InputDecoration(
                                 hintText: "Title",
                                 border: OutlineInputBorder(
@@ -205,6 +216,13 @@ class _AddNewScreenState extends State<AddNewScreen> {
                             //description
                             TextFormField(
                               controller: _descriptionController,
+                              validator: (value) {
+                                if(value!.isEmpty){
+                                  return "Please Enter Description!!";
+                                }else{
+                                  return null;
+                                }
+                              },
                               decoration: InputDecoration(
                                 hintText: "Description",
                                 border: OutlineInputBorder(
@@ -220,6 +238,16 @@ class _AddNewScreenState extends State<AddNewScreen> {
                             //amount
                             TextFormField(
                               controller: _amountController,
+                              validator: (value) {
+                                if(value!.isEmpty){
+                                  return "Please Enter your Amount!!";
+                                }
+                                double? amount = double.tryParse(value);
+                                if(amount == null || amount <= 0){
+                                  return "Amount is not valid!!";
+                                }
+                                return null;
+                              },
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 hintText: "Amount",
@@ -364,29 +392,30 @@ class _AddNewScreenState extends State<AddNewScreen> {
                             GestureDetector(
                               onTap: () async {
                                 //save data to shared pref
-                                if(_selectedMethode == 0){
+                                if( _formKey.currentState!.validate())
+                                  {if(_selectedMethode == 0){
                                   //add expense
                                   List<Expense> loadedExpenses = 
                                     await ExpenseService().loadExpense();
-                                //create the expense to store
-                                Expense expense = Expense(
-                                  id: loadedExpenses.length+1, 
-                                  title: _titileController.text, 
-                                  amount: _amountController.text.isEmpty 
+                                  //create the expense to store
+                                  Expense expense = Expense(
+                                    id: loadedExpenses.length+1, 
+                                    title: _titileController.text, 
+                                    amount: _amountController.text.isEmpty 
                                         ? 0 
                                         : double.parse(_amountController.text), 
-                                  category: _expenseCategory, 
-                                  date: _selectedDate, 
-                                  time: _selectedTime, 
-                                  description: _descriptionController.text,
-                                );
-                                //add expense
-                                widget.addExpense(expense);
-                                //clear the fields afret adding
-                                _titileController.clear();
-                                _amountController.clear();
-                                _descriptionController.clear();
-                                }else{
+                                    category: _expenseCategory, 
+                                    date: _selectedDate, 
+                                    time: _selectedTime, 
+                                    description: _descriptionController.text,
+                                    );
+                                  //add expense
+                                  widget.addExpense(expense);
+                                  //clear the fields afret adding
+                                  _titileController.clear();
+                                  _amountController.clear();
+                                  _descriptionController.clear();
+                                  }else{
                                   //add income
                                   List<Income> loadIncome = 
                                     await IncomeService().loadIncome();
@@ -405,10 +434,11 @@ class _AddNewScreenState extends State<AddNewScreen> {
                                   //add income
                                   widget.addIncome(income);
                                   //clear the fields afret adding
-                                _titileController.clear();
-                                _amountController.clear();
-                                _descriptionController.clear();
-                                }
+                                   _titileController.clear();
+                                   _amountController.clear();
+                                   _descriptionController.clear();
+                                  }
+                                }  
                               },
                               child: LongButtonWidget(
                                 buttonName: "Add", 
